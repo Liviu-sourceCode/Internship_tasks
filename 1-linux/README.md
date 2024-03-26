@@ -1,0 +1,1 @@
+"I learned how to create an Ubuntu image in Docker, pull the Ubuntu image from Docker Hub, run a container based on the Ubuntu image, explore and make changes within the container environment using Linux commands, commit changes to create a new image, stop and remove containers, and utilize Docker commands effectively for container management.
