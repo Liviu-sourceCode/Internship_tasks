@@ -1,0 +1,41 @@
+name: Docker Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test-locally:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Build and test Docker image locally
+        run: |
+          docker build -t my-image .
+          docker run my-image pythonapp
+
+  build-and-deploy-to-registry:
+    runs-on: ubuntu-latest
+    needs: build-and-test-locally
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker build -t my-image .
+      
+      - name: Log in to Docker Hub
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+      - name: Tag Docker image
+        run: docker tag my-image $DOCKER_USERNAME/my-image:latest
+
+      - name: Push Docker image to Docker Hub
+        run: docker push $DOCKER_USERNAME/my-image:latest
